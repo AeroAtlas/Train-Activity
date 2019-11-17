@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Train Activity</title>
+
+  <!-- Added Moment JS -->
+  <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+  <!-- jQuery -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+  <!-- Bootstrap CDN-->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+  <!-- Firebase References -->
+  <script src="https://www.gstatic.com/firebasejs/6.0.4/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/6.0.4/firebase-database.js"></script>
+
+
+</head>
+<body>
+  <div id="container">
+    <!-- Jumbotron -->
+    <div id="row">
+      <div id="col-md-12">
+        <div class="jumbotron">
+          <h1 class="display-4">Anyime is Train Time</h1>
+          <hr class="my-4">
+          <p class="lead">Chugga Chugga Choo Choo</p>
+          <!-- <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
+          <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a> -->
+        </div>
+      </div>
+    </div>
+    <!-- Train Schedule -->
+
+    <!-- Add Train -->
+    <div class="card-body">
+      <!-- Sign-up Form (note the various input "types")-->
+      <form role="form">
+        <div class="form-group">
+          <label for="name-input">Name:</label>
+          <input class="form-control" id="name-input" type="text">
+        </div>
+        <div class="form-group">
+          <label for="email-input">Email:</label>
+          <input class="form-control" id="email-input" type="email">
+        </div>
+        <div class="form-group">
+          <label for="age-input">Age:</label>
+          <input class="form-control" id="age-input" type="number">
+        </div>
+        <div class="form-group">
+          <label for="comment-input">How did you hear about us?</label>
+          <textarea class="form-control" id="comment-input" rows="5"></textarea>
+        </div>
+        <button class="btn btn-default" id="add-user" type="submit">Submit</button>
+      </form>
+    </div>
+
+
+
+
+    <!-- End of Container -->
+  </div>
+
+  <!-- CSS -->
+  <style src="files/css/style.css"></style>
+  <!-- Script -->
+  <script src="files/js/app.js"></script>
+</body>
+</html>
