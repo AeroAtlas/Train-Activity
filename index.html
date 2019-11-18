@@ -166,6 +166,7 @@
         //append full list of items to train-list
         var row = $("<div>");
         row.addClass("row");
+        row.attr("id", child.name)
         var col1 = $("<div>");
         col1.addClass("col-md-2");
         col1.append(child.name);
@@ -200,24 +201,29 @@
         console.log("Errors handled: " + errorObject.code);
       });
       
+      //Delete all Train Rows
       $("#remove-all").on("click", function(){
         $("#train-list").html("")
         database.ref("/trains").remove();
         database.ref().child("trains").set("");
       });
 
-      //
+      //Delete Single Train Row
       $(document).ready(function(){
         $(document).on("click", "#delete-this", function(){
           console.log("click works")
+          //Remove it from Firebase
           var deleteName = "/"+nameArray;
           deleteName = String(deleteName);
           deleteName = "/trains"+deleteName
           console.log(deleteName)
           database.ref(deleteName).remove();
 
-          //needs to delete the html
-
+          // Remove the HTML
+          var htmlName = "#"+nameArray;
+          htmlName = String(htmlName);
+          console.log(htmlName);
+          $(htmlName).html("");
         });
       });
       
