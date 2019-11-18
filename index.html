@@ -35,6 +35,10 @@
         </div>
       </div>
     </div>
+    <!-- Clock -->
+    <div class="row">
+      <div id="clock"></div>
+    </div>
     <!-- Train Schedule -->
     <div class="row">
       <div class="col-lg-12">
@@ -136,6 +140,12 @@
     var freq = 0;
     var nameArray = [];
 
+    // Clock
+    // function update(){
+    // $("#clock").text(moment(currentTime).format("MMMM Do YYYY hh:mm:ss a"))
+    // }
+    // setInterval(update, 1000)
+
     //Click event for input
     $("#add-train").on("click", function(event){
       event.preventDefault();
@@ -151,6 +161,53 @@
       $("#destination-input").val("");
       $("#time-input").val("");
       $("#freq-input").val("");
+
+      // Figure out the time
+      var currentTime = firebase.database.ServerValue.TIMESTAMP
+      console.log(currentTime);
+
+      var momentTime = moment(currentTime).format("HH:mm")
+      console.log(momentTime);
+
+      //Current time is a string so convert it into minutes
+      var m1 = momentTime.indexOf(":");
+      var m2 = momentTime.substring(0,m1);
+      var m3 = momentTime.substring(m1+1);
+      m2 = parseInt(m2);
+      m3 = parseInt(m3);
+      var m4 = m2*60+m3;
+      console.log(m4);
+
+      //Turn the time variable into only minutes
+      var t1 = time % 100;
+      var t2 = time / 100;
+      var t3 = t1*60+t2;
+      console.log(t3)
+
+      var diff = Math.abs(m4-t3);
+      var remain = diff%freq;
+      reamin = Math.round(remain)
+      console.log(diff);
+      console.log(remain);
+      var aaa = freq - remain;
+      var lastArrival = Math.abs(m4 - aaa);
+      console.log(lastArrival);
+
+      var l1 = Math.floor(lastArrival/60);
+      var l2 = lastArrival%60;
+      if(l1 < 10){
+        l1 = "0"+l1;
+      }
+      if(l2 < 10){
+        l2 = "0"+l2;
+      }
+      var l3 = l1+":"+l2;
+      console.log(l3);
+
+
+      //Figure out current time in hours
+      //Use current time - train arrival
+      //use freq to figure out 
 
       //Put them into Firebase/trains with name
       database.ref("/trains").child(name).set({
@@ -210,6 +267,9 @@
         button5.attr("value", child.name)
         button5.append("Delete")
         col5.append(button5);
+        //Line maker
+        var hr = $("<hr>");
+        hr.attr("id", child.name+"hr")
  
         //Appends Colums to the rows and puts it in html
         $(row).append(col1);
@@ -218,7 +278,7 @@
         $(row).append(col4);
         $(row).append(col5);
         $("#train-list").append(row);
-        $("#train-list").append("<hr>");
+        $("#train-list").append(hr);
 
         // Handle Errors
       }, function(errorObject) {
@@ -252,16 +312,19 @@
           var htmlName = "#"+htmlName;
           console.log(htmlName);
           $(htmlName).html("");
+          // Remove the <hr> tag
+          var hrName = htmlName+"hr";
+          hrName = String(hrName);
+          $(hrName).remove();
 
           //If /trains doesn't exist
           var ref = database.ref("/trains")
           ref.once("value").then(function(snapshot){
             var a = snapshot.exists();
-            //var b = snapshot.exists();
+            //add /trains if it doesn't exist
             if(a == false){
               console.log("oops");
               database.ref().child("trains").set("");
-              //database.ref("/trains").child("").set("");
             }
           })
 
