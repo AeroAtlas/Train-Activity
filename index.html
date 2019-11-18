@@ -44,7 +44,7 @@
             </div>
             <div class="card-body">
               <!-- Train List -->
-              <div id="train-list">
+              <div id="train-top">
                 <!-- Title -->
                 <div class="row">
                   <div class="col-md-2">
@@ -70,6 +70,9 @@
                 <hr>
                 <!-- End of Train List -->
               </div>
+              <div id="train-list">
+                <!-- OUTPUT HERE -->
+              </div>
               <!-- End of Card Body -->
             </div>
             <button class="btn btn-danger" id="remove-all" type="submit">Delete All</button>
@@ -82,22 +85,27 @@
       <div class="card">
         <div class="card-header">Input</div>
         <form role="form">
+          <!-- Train Name -->
           <div class="form-group">
             <label for="name-input">Train Name</label>
             <input class="form-control" id="name-input" type="text">
           </div>
+          <!-- Train Destination -->
           <div class="form-group">
             <label for="email-input">Destination</label>
             <input class="form-control" id="destination-input" type="text">
           </div>
+          <!-- Train Time -->
           <div class="form-group">
             <label for="age-input">First Train Time (HH:mm - military time)</label>
             <input class="form-control" id="time-input" type="number">
           </div>
+          <!-- Train frequency -->
           <div class="form-group">
             <label for="age-input">Frequency (min)</label>
             <input class="form-control" id="freq-input" type="number">
           </div>
+          <!-- Submit button -->
           <button class="btn btn-default" id="add-train" type="submit">Submit</button>
         </form>
       </div>
@@ -132,11 +140,19 @@
     $("#add-train").on("click", function(event){
       event.preventDefault();
 
+      //Get variables from html
       name = $("#name-input").val().trim();
       destination = $("#destination-input").val().trim();
       time = $("#time-input").val().trim();
       freq = $("#freq-input").val().trim();
 
+      //Clear the html elements
+      $("#name-input").val("");
+      $("#destination-input").val("");
+      $("#time-input").val("");
+      $("#freq-input").val("");
+
+      //Put them into Firebase/trains with name
       database.ref("/trains").child(name).set({
         name,
         destination,
@@ -163,28 +179,35 @@
         console.log(child.freq);
         console.log(child.dateAdded);
 
-        //append full list of items to train-list
+        //Append Rows and Columns to train-list
+        //Row
         var row = $("<div>");
         row.addClass("row");
         row.attr("id", child.name)
+        //Column 1 (name)
         var col1 = $("<div>");
         col1.addClass("col-md-2");
         col1.append(child.name);
+        //Column 2 (destination)
         var col2 = $("<div>");
         col2.addClass("col-md-2");
         col2.append(child.destination);
+        //Column 3 (time)
         var col3 = $("<div>");
         col3.addClass("col-md-2");
         col3.append(child.time);
+        // Column 4 (freq)
         var col4 = $("<div>");
         col4.addClass("col-md-2");
         col4.append(child.freq);
+        // Column 5 (button) - should be 6
         var col5 = $("<div>");
         col5.addClass("col-md-2");
         var button5 = $("<button>")
         button5.addClass("btn btn-primary")
         button5.attr("type", "submit")
         button5.attr("id", "delete-this")
+        button5.attr("value", child.name)
         button5.append("Delete")
         col5.append(button5);
  
@@ -195,6 +218,7 @@
         $(row).append(col4);
         $(row).append(col5);
         $("#train-list").append(row);
+        $("#train-list").append("<hr>");
 
         // Handle Errors
       }, function(errorObject) {
@@ -206,6 +230,7 @@
         $("#train-list").html("")
         database.ref("/trains").remove();
         database.ref().child("trains").set("");
+        //database.ref("/trains").child("").set("");
       });
 
       //Delete Single Train Row
@@ -213,17 +238,39 @@
         $(document).on("click", "#delete-this", function(){
           console.log("click works")
           //Remove it from Firebase
-          var deleteName = "/"+nameArray;
+          var deleteName = $(this).val();
           deleteName = String(deleteName);
+          deleteName = "/"+deleteName;
           deleteName = "/trains"+deleteName
           console.log(deleteName)
           database.ref(deleteName).remove();
+          //database.ref().child(deleteName).set("");
 
           // Remove the HTML
-          var htmlName = "#"+nameArray;
+          var htmlName = $(this).val();
           htmlName = String(htmlName);
+          var htmlName = "#"+htmlName;
           console.log(htmlName);
           $(htmlName).html("");
+
+          //If /trains doesn't exist
+          var ref = database.ref("/trains")
+          ref.once("value").then(function(snapshot){
+            var a = snapshot.exists();
+            //var b = snapshot.exists();
+            if(a == false){
+              console.log("oops");
+              database.ref().child("trains").set("");
+              //database.ref("/trains").child("").set("");
+            }
+          })
+
+
+          // var htmlName = "#"+nameArray;
+          // htmlName = String(htmlName);
+          // console.log(htmlName);
+          // $(htmlName).html("");
+          //Only deletes most recent row
         });
       });
       
