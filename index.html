@@ -170,44 +170,43 @@
       console.log(momentTime);
 
       //Current time is a string so convert it into minutes
-      var m1 = momentTime.indexOf(":");
-      var m2 = momentTime.substring(0,m1);
-      var m3 = momentTime.substring(m1+1);
-      m2 = parseInt(m2);
-      m3 = parseInt(m3);
-      var m4 = m2*60+m3;
-      console.log(m4);
+      var mColon = momentTime.indexOf(":");
+      var mHours = momentTime.substring(0,mColon);
+      var mMinutes = momentTime.substring(mColon+1);
+      mHours = parseInt(mHours); //parse int for hours
+      mMinutes = parseInt(mMinutes); //parse int for minutes
+      var mFull = mHours*60+mMinutes; //turn into only minutes
+      console.log(mFull);
 
       //Turn the time variable into only minutes
-      var t1 = time % 100;
-      var t2 = time / 100;
-      var t3 = t1*60+t2;
-      console.log(t3)
+      var tHours = Math.round(time / 100); //1023/100 =10 for 10:23
+      console.log(tHours);
+      var tMinutes = time % 100; //1023%100 = 23
+      console.log(tMinutes);
+      var tFull = tHours*60+tMinutes;
+      console.log(tFull);
 
-      var diff = Math.abs(m4-t3);
-      var remain = diff%freq;
-      reamin = Math.round(remain)
+      //Get the time remaining
+      var diff = Math.abs(mFull-tFull); //difference
       console.log(diff);
+      var remain = Math.round(diff%freq);//how much time till next train
       console.log(remain);
-      var aaa = freq - remain;
-      var lastArrival = Math.abs(m4 - aaa);
-      console.log(lastArrival);
 
-      var l1 = Math.floor(lastArrival/60);
-      var l2 = lastArrival%60;
-      if(l1 < 10){
-        l1 = "0"+l1;
+      //Get the next train arrival
+      var next = mFull + remain;//full numbers
+      console.log(next);
+      var nHours  = Math.round(next/60);
+      console.log(nHours);
+      var nMinutes = next%60;
+      console.log(nMinutes);
+      if(nHours < 10){
+        nHours = 0+""+nHours;
       }
-      if(l2 < 10){
-        l2 = "0"+l2;
+      if(nMinutes < 10){
+        nMinutes = 0+""+nMinutes;
       }
-      var l3 = l1+":"+l2;
-      console.log(l3);
+      var nextTrain = nHours+":"+nMinutes
 
-
-      //Figure out current time in hours
-      //Use current time - train arrival
-      //use freq to figure out 
 
       //Put them into Firebase/trains with name
       database.ref("/trains").child(name).set({
@@ -215,11 +214,13 @@
         destination,
         time,
         freq,
+        remain, ///added just now (minutes away)
+        nextTrain,
         dateAdded: firebase.database.ServerValue.TIMESTAMP
       });
 
       //Get global name variable
-      nameArray.push(name);
+      nameArray.push(name); //Don't need these
       console.log(nameArray);
 
     });
@@ -234,6 +235,8 @@
         console.log(child.destination);
         console.log(child.time);
         console.log(child.freq);
+        console.log(child.remain);
+        console.log(child.nextTrain);
         console.log(child.dateAdded);
 
         //Append Rows and Columns to train-list
@@ -256,8 +259,12 @@
         // Column 4 (freq)
         var col4 = $("<div>");
         col4.addClass("col-md-2");
-        col4.append(child.freq);
+        col4.append(child.nextTrain);
         // Column 5 (button) - should be 6
+        var col6 = $("<div>");
+        col6.addClass("col-md-2");
+        col6.append(child.remain); 
+        //
         var col5 = $("<div>");
         col5.addClass("col-md-2");
         var button5 = $("<button>")
@@ -276,6 +283,7 @@
         $(row).append(col2);
         $(row).append(col3);
         $(row).append(col4);
+        $(row).append(col6);
         $(row).append(col5);
         $("#train-list").append(row);
         $("#train-list").append(hr);
