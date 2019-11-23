@@ -163,10 +163,7 @@
       $("#freq-input").val("");
 
       // Figure out the time
-      var currentTime = firebase.database.ServerValue.TIMESTAMP
-      console.log(currentTime);
-
-      var momentTime = moment(currentTime).format("HH:mm")
+      var momentTime = moment().format("HH:mm")
       console.log(momentTime);
 
       //Current time is a string so convert it into minutes
@@ -214,7 +211,7 @@
         destination,
         time,
         freq,
-        remain, ///added just now (minutes away)
+        remain, 
         nextTrain,
         dateAdded: firebase.database.ServerValue.TIMESTAMP
       });
@@ -298,7 +295,6 @@
         $("#train-list").html("")
         database.ref("/trains").remove();
         database.ref().child("trains").set("");
-        //database.ref("/trains").child("").set("");
       });
 
       //Delete Single Train Row
@@ -312,7 +308,6 @@
           deleteName = "/trains"+deleteName
           console.log(deleteName)
           database.ref(deleteName).remove();
-          //database.ref().child(deleteName).set("");
 
           // Remove the HTML
           var htmlName = $(this).val();
@@ -335,25 +330,8 @@
               database.ref().child("trains").set("");
             }
           })
-
-
-          // var htmlName = "#"+nameArray;
-          // htmlName = String(htmlName);
-          // console.log(htmlName);
-          // $(htmlName).html("");
-          //Only deletes most recent row
         });
       });
-      
-      // $("#delete-this").on("click", function(){
-      //   console.log("works")
-      //   var deleteName = "/"+name;
-      //   console.log(deleteName)
-      //   database.ref(deleteName).remove();
-      // });
-  
-
-
 
   </script>
   <!-- CSS -->
