@@ -139,12 +139,7 @@
     var time = 0;
     var freq = 0;
     var nameArray = [];
-
-    // Clock
-    // function update(){
-    // $("#clock").text(moment(currentTime).format("MMMM Do YYYY hh:mm:ss a"))
-    // }
-    // setInterval(update, 1000)
+    
 
     //Click event for input
     $("#add-train").on("click", function(event){
@@ -252,7 +247,7 @@
         //Column 3 (time)
         var col3 = $("<div>");
         col3.addClass("col-md-2");
-        col3.append(child.time);
+        col3.append(child.freq);
         // Column 4 (freq)
         var col4 = $("<div>");
         col4.addClass("col-md-2");
